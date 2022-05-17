@@ -1,10 +1,42 @@
-var express = require("express");
-var router = express.Router();
+const { Router } = require("express");
+const asyncHandler = require("../utils/async-handler");
+const hashPassword = require("../utils/hash-password");
+const { User } = require("../models");
 
-/* GET home page. */
-router.get("/", function (req, res, next) {
-  res.redirect("/posts");
+const router = Router();
+
+router.get("/", (req, res) => {
+  if (req.user) {
+    res.redirect("/posts");
+    return;
+  }
+
+  res.redirect("/login");
 });
 
-module.exports = router;
+router.get("/login", (req, res, next) => {
+  res.render("user/login");
+});
 
+router.get("/join", (req, res, next) => {
+  res.render("user/join");
+});
+
+router.post(
+  "/join",
+  asyncHandler(async (req, res) => {
+    const { email, name, password } = req.body;
+    const hashedPassword = hashPassword(password);
+    const user = User.create({
+      email,
+      name,
+      password: hashedPassword,
+    });
+
+    console.log("신규 회원", user);
+
+    res.redirect("/");
+  })
+);
+
+module.exports = router;

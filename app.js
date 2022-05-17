@@ -3,11 +3,15 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
-const mongoose = require("mongoose");
 const dayjs = require("dayjs");
+const session = require("express-session");
+const passport = require("passport");
+const passports = require("./passport");
 const indexRouter = require("./routes/index");
 const postsRouter = require("./routes/posts");
+const authRouter = require("./routes/auth");
 const dbConnect = require("./dbConnect");
+const loginRequired = require("./middlewares/login-required");
 
 dbConnect();
 
@@ -26,8 +30,20 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+app.use(
+  session({
+    secret: "simpleBoard",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+passports();
+
 app.use("/", indexRouter);
-app.use("/posts", postsRouter);
+app.use("/posts", loginRequired, postsRouter);
+app.use("/auth", authRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

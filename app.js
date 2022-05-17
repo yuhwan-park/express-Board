@@ -6,14 +6,15 @@ const logger = require("morgan");
 const dayjs = require("dayjs");
 const session = require("express-session");
 const passport = require("passport");
+const MongoStore = require("connect-mongo");
 const passports = require("./passport");
 const indexRouter = require("./routes/index");
 const postsRouter = require("./routes/posts");
 const authRouter = require("./routes/auth");
-const dbConnect = require("./dbConnect");
+const db = require("./dbConnect");
 const loginRequired = require("./middlewares/login-required");
 
-dbConnect();
+db.connect();
 
 const app = express();
 
@@ -35,6 +36,9 @@ app.use(
     secret: "simpleBoard",
     resave: false,
     saveUninitialized: true,
+    store: MongoStore.create({
+      mongoUrl: db.uri,
+    }),
   })
 );
 app.use(passport.initialize());

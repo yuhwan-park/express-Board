@@ -5,7 +5,7 @@ block content
   table
     tbody
       tr
-        th= post.author
+        th= post.author.name
         th(colspan="2")= formatDate(post.createdAt)
       tr
         td(colspan="3")
@@ -16,7 +16,7 @@ block content
         td: button.delete(onclick='deletePost()') 삭제
   script(type="text/javascript").
     function deletePost() {
-      fetch('/posts/#{post.shortId}', { method: 'delete' })
+      fetch('/posts/#{post.shortId}', { method: 'delete', credentials: 'include' })
         .then((res) => {
           if (res.ok) {
             alert('삭제되었습니다.');

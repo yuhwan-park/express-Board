@@ -27,14 +27,11 @@ router.post(
   asyncHandler(async (req, res) => {
     const { email, name, password } = req.body;
     const hashedPassword = hashPassword(password);
-    const user = User.create({
+    User.create({
       email,
       name,
       password: hashedPassword,
     });
-
-    console.log("신규 회원", user);
-
     res.redirect("/");
   })
 );

@@ -14,7 +14,10 @@ block content
           td: a(href="/join")
             button(type="button") 회원가입
         tr
-          td: a(href="/reset-password")
+          td(colspan="2"): a(href="/auth/google")
+            button(type="button") 구글 로그인
+        tr
+          td(colspan="2"): a(href="/reset-password")
             button(type="button") 비밀번호 찾기
   script.
     function check() {

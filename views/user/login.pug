@@ -13,6 +13,9 @@ block content
           td: input(type="submit" value="로그인")
           td: a(href="/join")
             button(type="button") 회원가입
+        tr
+          td: a(href="/reset-password")
+            button(type="button") 비밀번호 찾기
   script.
     function check() {
       const email = document.querySelector('[name="email"]').value

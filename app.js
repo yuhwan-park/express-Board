@@ -8,6 +8,7 @@ const session = require("express-session");
 const passport = require("passport");
 const MongoStore = require("connect-mongo");
 const passports = require("./passport");
+const getUserFromToken = require("./middlewares/get-user-from-jwt");
 const indexRouter = require("./routes/index");
 const postsRouter = require("./routes/posts");
 const authRouter = require("./routes/auth");
@@ -33,19 +34,24 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use(
-  session({
-    secret: "simpleBoard",
-    resave: false,
-    saveUninitialized: true,
-    store: MongoStore.create({
-      mongoUrl: db.uri,
-    }),
-  })
-);
+// ********************
+// JWT를 이용하기 위한 Session 비활성화
+// ********************
+
+// app.use(
+//   session({
+//     secret: "simpleBoard",
+//     resave: false,
+//     saveUninitialized: true,
+//     store: MongoStore.create({
+//       mongoUrl: db.uri,
+//     }),
+//   })
+// );
+// app.use(passport.session());
 app.use(passport.initialize());
-app.use(passport.session());
 passports();
+app.use(getUserFromToken);
 
 app.use("/", indexRouter);
 app.use("/posts", loginRequired, postsRouter);

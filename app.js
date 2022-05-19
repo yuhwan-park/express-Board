@@ -12,6 +12,7 @@ const indexRouter = require("./routes/index");
 const postsRouter = require("./routes/posts");
 const authRouter = require("./routes/auth");
 const usersRouter = require("./routes/users");
+const apiRouter = require("./routes/api");
 const db = require("./dbConnect");
 const loginRequired = require("./middlewares/login-required");
 
@@ -49,6 +50,7 @@ passports();
 app.use("/", indexRouter);
 app.use("/posts", loginRequired, postsRouter);
 app.use("/users", loginRequired, usersRouter);
+app.use("/api", loginRequired, apiRouter);
 app.use("/auth", authRouter);
 
 // catch 404 and forward to error handler
